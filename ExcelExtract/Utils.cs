@@ -92,7 +92,7 @@ namespace ExcelExtract
             //清除默认的工作表
             wb.Worksheets.Clear();
             List<String> sheetlist = new List<String>();
-            int no = 1;
+            int no = order_dic.Count;
             foreach (string key in order_dic.Keys)
             {
                 List<Order> orderlist = order_dic[key];
@@ -102,8 +102,7 @@ namespace ExcelExtract
                 {
                     sheet_name = sn.Substring(0, 5);
                 }
-                
-                if(sheetlist.IndexOf(sn) >0)
+                if(sheetlist.IndexOf(sn) > -1)
                 {
                     int _index = sheetlist.FindAll((String str) => str == sn).Count;
                     //重复客户，页签名+1
@@ -115,7 +114,7 @@ namespace ExcelExtract
                 //创建样式
                 CellStyle style = wb.Styles.Add("newStyle");
                 style.Font.FontName = "宋体";
-                style.Font.Size = 12;
+                style.Font.Size = 11;
                 st.ApplyStyle(style);
                 //创建字体
                 ExcelFont font1 = wb.CreateFont();
@@ -124,13 +123,14 @@ namespace ExcelExtract
                 font1.Size = 14;
                 font1.Underline = FontUnderlineType.Single;
 
-                Console.WriteLine("sheet_name:{0}", sheet_name);
-                foreach (Order order in orderlist)
-                {
-                    Console.WriteLine("key:{0} Model:{1} Num:{2}", key, order.Model, order.Num);
-                }
+                Console.WriteLine("no:{0} key:{1} sheet_name:{2}", no, key, sheet_name);
+                //foreach (Order order in orderlist)
+                //{
+                //    Console.WriteLine("key:{0} Model:{1} Num:{2}", key, order.Model, order.Num);
+                //}
                 FormatXlsx(no, st, font1, orderlist);
-                no++;
+                no--;
+                Thread.Sleep(10);
             }
 
             wb.SaveToFile(fileName+"_销售出库单.xlsx", FileFormat.Version2013);
@@ -167,12 +167,14 @@ namespace ExcelExtract
             st.Range["E2"].Value = "页码：";
             st.Range["E2"].HorizontalAlignment = HorizontalAlignType.Right;
             st.Range["F2"].Value = "第1页，共1页";
+            st.Range["F2"].HorizontalAlignment = HorizontalAlignType.Left;
             st.Range["F2:G2"].Merge();
 
 
-            st.Range["B3"].Value = "日期：";
-            st.Range["B3"].HorizontalAlignment = HorizontalAlignType.Right;
-            st.Range["C3"].Value = date;
+            st.Range["A3"].Value = "日期：";
+            st.Range["A3"].HorizontalAlignment = HorizontalAlignType.Right;
+            st.Range["B3"].Value = date;
+            st.Range["B3"].HorizontalAlignment = HorizontalAlignType.Left;
             st.Range["E3"].Value = "单号：";
             st.Range["E3"].HorizontalAlignment = HorizontalAlignType.Right;
             st.Range["F3"].Value = "I0-" + date + "-" + no_str;
@@ -185,6 +187,7 @@ namespace ExcelExtract
             st.Range["E4"].Value = "单据类型：";
             st.Range["E4"].HorizontalAlignment = HorizontalAlignType.Right;
             st.Range["F4"].Value = "销售出库单";
+            st.Range["F4"].HorizontalAlignment = HorizontalAlignType.Left;
             st.Range["B4:D4"].Merge();
             st.Range["F4:G4"].Merge();
 
