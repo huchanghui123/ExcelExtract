@@ -92,7 +92,8 @@ namespace ExcelExtract
             //清除默认的工作表
             wb.Worksheets.Clear();
             List<String> sheetlist = new List<String>();
-            int no = order_dic.Count;
+            //int no = order_dic.Count;
+            int no = 1;
             foreach (string key in order_dic.Keys)
             {
                 List<Order> orderlist = order_dic[key];
@@ -129,8 +130,8 @@ namespace ExcelExtract
                 //    Console.WriteLine("key:{0} Model:{1} Num:{2}", key, order.Model, order.Num);
                 //}
                 FormatXlsx(no, st, font1, orderlist);
-                no--;
-                Thread.Sleep(10);
+                no++;
+                Thread.Sleep(5);
             }
 
             wb.SaveToFile(fileName+"_销售出库单.xlsx", FileFormat.Version2013);
